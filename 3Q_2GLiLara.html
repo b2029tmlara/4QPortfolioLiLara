@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Club Application Form</title>
     <style>
-        /* CSS Styling */
+        /* CSS Styling - Same as original with minor additions */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -41,26 +41,28 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        /* Focus pseudo-class style */
         input:focus, select:focus, textarea:focus {
             outline: none;
             border: 2px solid #4A90E2;
             background-color: #f0f7ff;
         }
-        /* Style for empty fields on blur */
         .input-error {
             border: 2px solid #ff4d4d !important;
             background-color: #fff2f2;
         }
         .button-group {
             text-align: center;
+            margin-top: 20px;
         }
-        button {
+        button, input[type="button"], .link-btn {
             padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
             border: none;
             border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13.33px;
         }
         input[type="submit"] {
             background-color: #28a745;
@@ -72,6 +74,10 @@
             color: white;
             width: auto;
         }
+        .view-btn {
+            background-color: #007bff;
+            color: white;
+        }
         .radio-group input {
             width: auto;
         }
@@ -79,8 +85,8 @@
 </head>
 <body>
 
-    <form method="post" action="submit" onsubmit="return confirmAction('submit')" onreset="return confirmAction('reset')">
-        
+    <form id="clubForm" onsubmit="return handleFormSubmit(event)" onreset="return confirmAction('reset')">
+
         <fieldset>
             <legend>Personal Identification</legend>
             <label>Student ID:
@@ -102,31 +108,31 @@
             <label>Mobile Phone:
                 <input type="text" name="phone" required onblur="checkEmpty(this)">
             </label>
-            
+
             <label>Grade Level:
                 <select name="gradeLevel" required>
                     <option value="">--Select Level--</option>
-                    <option value="LVL_09">Grade 9</option>
-                    <option value="LVL_10">Grade 10</option>
-                    <option value="LVL_11">Grade 11</option>
-                    <option value="LVL_12">Grade 12</option>
+                    <option value="Grade 9">Grade 9</option>
+                    <option value="Grade 10">Grade 10</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
                 </select>
             </label>
 
             <label class="radio-group">Status:
                 <br>
-                <input type="radio" name="status" value="INT" required> Intern
-                <input type="radio" name="status" value="EXT" required> Extern
+                <input type="radio" name="status" value="Intern" required> Intern
+                <input type="radio" name="status" value="Extern" required> Extern
             </label>
 
             <label>Preferred Organization / Club:
                 <select name="club" required>
                     <option value="">--Select a Club--</option>
-                    <option value="CODE_SOC">Coding Society</option>
-                    <option value="DEB_UN">Debate Union</option>
-                    <option value="ART_G">Artistic Guild</option>
-                    <option value="ECO_W">Eco Warriors</option>
-                    <option value="MUS_ENS">Music Ensemble</option>
+                    <option value="Coding Society">Coding Society</option>
+                    <option value="Debate Union">Debate Union</option>
+                    <option value="Artistic Guild">Artistic Guild</option>
+                    <option value="Eco Warriors">Eco Warriors</option>
+                    <option value="Music Ensemble">Music Ensemble</option>
                 </select>
             </label>
 
@@ -138,14 +144,17 @@
         <div class="button-group">
             <input type="submit" value="Submit Application">
             <input type="reset" value="Reset Form">
+            <a href="viewSignUps.html" class="link-btn view-btn">View Signups</a>
         </div>
 
     </form>
-    
-    <button> <a href="index.html"> Back Home </a></button>
 
     <script>
-        // Event handler for submit and reset confirmations
+        // Map readable names for consistency
+        // Note: I updated the option values in HTML above to be readable strings 
+        // to make the table display easier, but if strict codes are needed, 
+        // we can map them here.
+
         function confirmAction(type) {
             const message = type === 'submit' 
                 ? "Are you sure you want to submit your application?" 
@@ -153,13 +162,43 @@
             return confirm(message);
         }
 
-        // Event handler for onblur validation
         function checkEmpty(element) {
             if (element.value.trim() === "") {
                 element.classList.add("input-error");
             } else {
                 element.classList.remove("input-error");
             }
+        }
+
+        function handleFormSubmit(event) {
+            // Prevent default page reload
+            event.preventDefault();
+
+            // 1. Confirm submission
+            if (!confirmAction('submit')) {
+                return false;
+            }
+
+            // 2. Gather Data from the form
+            const form = event.target;
+            const formData = new FormData(form);
+            const signupData = Object.fromEntries(formData.entries());
+
+            // 3. Get existing data from localStorage or initialize empty array
+            let existingData = localStorage.getItem('clubSignups');
+            let signupsArray = existingData ? JSON.parse(existingData) : [];
+
+            // 4. Add new data
+            signupsArray.push(signupData);
+
+            // 5. Save back to localStorage
+            localStorage.setItem('clubSignups', JSON.stringify(signupsArray));
+
+            // 6. Alert and Reset
+            alert("Application Submitted and Saved!");
+            form.reset();
+            
+            return false;
         }
     </script>
 
