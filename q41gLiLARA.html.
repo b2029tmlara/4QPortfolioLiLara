@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Club Application Form</title>
+    <title>Movie Rating</title>
     <style>
         /* CSS Styling - Same as original with minor additions */
         body {
@@ -50,7 +50,7 @@
             border: 2px solid #ff4d4d !important;
             background-color: #fff2f2;
         }
-        .button-group {
+        .addMovie {
             text-align: center;
             margin-top: 20px;
         }
@@ -64,16 +64,7 @@
             display: inline-block;
             font-size: 13.33px;
         }
-        input[type="submit"] {
-            background-color: #28a745;
-            color: white;
-            width: auto;
-        }
-        input[type="reset"] {
-            background-color: #dc3545;
-            color: white;
-            width: auto;
-        }
+
         .view-btn {
             background-color: #007bff;
             color: white;
@@ -88,67 +79,38 @@
     <form id="clubForm" onsubmit="return handleFormSubmit(event)" onreset="return confirmAction('reset')">
 
         <fieldset>
-            <legend>Personal Identification</legend>
-            <label>Student ID:
-                <input type="number" name="studentID" required onblur="checkEmpty(this)">
+            <legend> Add a Movie </legend>
+            <label>Title:
+                <input type="text" name="movieTitle" required onblur="checkEmpty(this)">
             </label>
             <label>Full Name:
                 <input type="text" name="fullName" required onblur="checkEmpty(this)">
             </label>
-            <label>Birthday:
-                <input type="date" name="birthday" required>
+            <label>Year:
+                <input type="number" name="movieYear" required>
             </label>
-            <label>Email Address:
+            <label>Genre:
                 <input type="email" name="email" required onblur="checkEmpty(this)">
             </label>
         </fieldset>
-
+        
         <fieldset>
-            <legend>Membership Details</legend>
-            <label>Mobile Phone:
-                <input type="text" name="phone" required onblur="checkEmpty(this)">
-            </label>
-
-            <label>Grade Level:
-                <select name="gradeLevel" required>
-                    <option value="">--Select Level--</option>
-                    <option value="Grade 9">Grade 9</option>
-                    <option value="Grade 10">Grade 10</option>
-                    <option value="Grade 11">Grade 11</option>
-                    <option value="Grade 12">Grade 12</option>
-                </select>
-            </label>
-
-            <label class="radio-group">Status:
-                <br>
-                <input type="radio" name="status" value="Intern" required> Intern
-                <input type="radio" name="status" value="Extern" required> Extern
-            </label>
-
-            <label>Preferred Organization / Club:
-                <select name="club" required>
-                    <option value="">--Select a Club--</option>
-                    <option value="Coding Society">Coding Society</option>
-                    <option value="Debate Union">Debate Union</option>
-                    <option value="Artistic Guild">Artistic Guild</option>
-                    <option value="Eco Warriors">Eco Warriors</option>
-                    <option value="Music Ensemble">Music Ensemble</option>
-                </select>
-            </label>
-
-            <label>Why do you want to join?
-                <textarea name="reason" rows="4" required onblur="checkEmpty(this)"></textarea>
+            <legend> Your Rating </legend>
+            <label> DEVELOP RATING 
+                <input type="text" name="movieTitle" required onblur="checkEmpty(this)">
             </label>
         </fieldset>
+        
 
-        <div class="button-group">
-            <input type="submit" value="Submit Application">
-            <input type="reset" value="Reset Form">
-            <a href="viewSignUps.html" class="link-btn view-btn">View Signups</a>
+       
+        <div class="addMovie">
+            <a href="viewSignUps.html" class="link-btn view-btn"> Add Movie </a>
         </div>
 
     </form>
 
+    <button> <a href="index.html"> <b> Back to Q4 Portfolio </b> </button> </a> <br/> 
+ 
     <script>
         // Map readable names for consistency
         // Note: I updated the option values in HTML above to be readable strings 
@@ -157,7 +119,7 @@
 
         function confirmAction(type) {
             const message = type === 'submit' 
-                ? "Are you sure you want to submit your application?" 
+                ? "Are you sure you want to submit your Rating?" 
                 : "Are you sure you want to clear all entered information?";
             return confirm(message);
         }
@@ -195,7 +157,7 @@
             localStorage.setItem('clubSignups', JSON.stringify(signupsArray));
 
             // 6. Alert and Reset
-            alert("Application Submitted and Saved!");
+            alert("Movie Rating Submitted and Saved!");
             form.reset();
             
             return false;
