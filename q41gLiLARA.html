@@ -4,172 +4,132 @@
     <meta charset="UTF-8">
     <title>Movie Rating</title>
     <style>
-        /* CSS Styling - Same as original with minor additions */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-        }
-        form {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        fieldset {
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        legend {
-            font-weight: bold;
-            color: #333;
-        }
-        label {
-            display: block;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border: 2px solid #4A90E2;
-            background-color: #f0f7ff;
-        }
-        .input-error {
-            border: 2px solid #ff4d4d !important;
-            background-color: #fff2f2;
-        }
-        .addMovie {
-            text-align: center;
-            margin-top: 20px;
-        }
-        button, input[type="button"], .link-btn {
-            padding: 10px 20px;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 13.33px;
-        }
-
-        .view-btn {
-            background-color: #007bff;
-            color: white;
-        }
-        .radio-group input {
-            width: auto;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        form { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        fieldset { border: 1px solid #ddd; margin-bottom: 20px; padding: 15px; border-radius: 5px; }
+        legend { font-weight: bold; color: #333; }
+        label { display: block; margin-bottom: 15px; font-size: 14px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .input-error { border: 2px solid #ff4d4d !important; background-color: #fff2f2; }
+        
+        /* Star Rating Styling */
+        .star-rating { font-size: 30px; cursor: pointer; color: #ccc; display: inline-block; }
+        .star-rating .star.selected { color: gold; }
+        
+        .movie-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .movie-list-stars { color: gold; font-size: 18px; }
+        
+        .addMovie { text-align: center; margin-top: 20px; }
+        .submit-btn { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .back-btn { text-decoration: none; color: black; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <form id="clubForm" onsubmit="return handleFormSubmit(event)" onreset="return confirmAction('reset')">
-
+    <form id="clubForm" onsubmit="handleFormSubmit(event)">
         <fieldset>
             <legend> Add a Movie </legend>
-            <label>Title:
-                <input type="text" name="movieTitle" required onblur="checkEmpty(this)">
+            <label>Title: <input type="text" id="movieTitle" required></label>
+            <label>Year: <input type="number" id="movieYear" required></label>
+            <label>Genre: 
+                <select id="movieGenre" required>
+                    <option value="Action">Action</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                </select>
             </label>
-           
-            <label>Year:
-                <input type="number" name="movieYear" required>
-            </label>
-            
-            <label>Genre:
-                <input type="email" name="email" required onblur="checkEmpty(this)">
-            </label>
-            
         </fieldset>
         
         <fieldset>
             <legend> Your Rating </legend>
-            <label> DEVELOP RATING 
-                <input type="text" name="movieTitle" required onblur="checkEmpty(this)">
-            </label>
+            <div class="star-rating" id="starContainer">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" id="ratingValue" value="0" required>
         </fieldset>
         
-        
-        <fieldset>
-            <legend> Movie List </legend>
-            <span id="movieLists"></span>
-        </fieldset>
-         
-        
-
-       
         <div class="addMovie">
-            <a href="viewSignUps.html" class="link-btn view-btn"> Add Movie </a>
+            <button type="submit" class="submit-btn">Add Movie</button>
         </div>
 
+        <fieldset>
+            <legend> Movie List </legend>
+            <div id="movieLists"></div>
+        </fieldset>
     </form>
 
-    <button> <a href="index.html"> <b> Back to Q4 Portfolio </b> </button> </a> <br/> 
- 
+    <a href="index.html" class="back-btn"><b>Back to Q4 Portfolio</b></a>
+
     <script>
-        // Map readable names for consistency
-        // Note: I updated the option values in HTML above to be readable strings 
-        // to make the table display easier, but if strict codes are needed, 
-        // we can map them here.
+        let currentRating = 0;
 
-        function confirmAction(type) {
-            const message = type === 'submit' 
-                ? "Are you sure you want to submit your Rating?" 
-                : "Are you sure you want to clear all entered information?";
-            return confirm(message);
-        }
+        // Star Selection Logic
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                currentRating = star.getAttribute('data-value');
+                document.getElementById('ratingValue').value = currentRating;
+                updateStarDisplay(currentRating);
+            });
+        });
 
-        function checkEmpty(element) {
-            if (element.value.trim() === "") {
-                element.classList.add("input-error");
-            } else {
-                element.classList.remove("input-error");
-            }
+        function updateStarDisplay(rating) {
+            stars.forEach(s => {
+                s.classList.toggle('selected', s.getAttribute('data-value') <= rating);
+            });
         }
 
         function handleFormSubmit(event) {
-            // Prevent default page reload
             event.preventDefault();
 
-            // 1. Confirm submission
-            if (!confirmAction('submit')) {
-                return false;
+            if (currentRating === 0) {
+                alert("Please select a rating!");
+                return;
             }
 
-            // 2. Gather Data from the form
-            const form = event.target;
-            const formData = new FormData(form);
-            const signupData = Object.fromEntries(formData.entries());
+            if (!confirm("Are you sure you want to submit?")) return;
 
-            // 3. Get existing data from localStorage or initialize empty array
-            let existingData = localStorage.getItem('clubSignups');
-            let signupsArray = existingData ? JSON.parse(existingData) : [];
+            // Create JS Object structure
+            const movieEntry = {
+                title: document.getElementById('movieTitle').value,
+                year: document.getElementById('movieYear').value,
+                genre: document.getElementById('movieGenre').value,
+                rating: currentRating
+            };
 
-            // 4. Add new data
-            signupsArray.push(signupData);
+            // LocalStorage Management
+            let movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
+            movies.push(movieEntry);
+            localStorage.setItem('movieRatings', JSON.stringify(movies));
 
-            // 5. Save back to localStorage
-            localStorage.setItem('clubSignups', JSON.stringify(signupsArray));
-
-            // 6. Alert and Reset
-            alert("Movie Rating Submitted and Saved!");
-            form.reset();
+            // Reset Form
+            event.target.reset();
+            currentRating = 0;
+            updateStarDisplay(0);
             
-            return false;
+            displayMovies();
+            alert("Movie Added Successfully!");
         }
-    </script>
 
+        function displayMovies() {
+            const listDiv = document.getElementById('movieLists');
+            const movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
+            
+            listDiv.innerHTML = movies.map(m => `
+                <div class="movie-item">
+                    <strong>${m.title}</strong> (${m.year}) - <em>${m.genre}</em><br>
+                    <span class="movie-list-stars">${'&#9733;'.repeat(m.rating)}${'&#9734;'.repeat(5-m.rating)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Initial load
+        window.onload = displayMovies;
+    </script>
 </body>
 </html>
