@@ -65,71 +65,115 @@
 
     <a href="index.html" class="back-btn"><b>Back to Q4 Portfolio</b></a>
 
-    <script>
-        let currentRating = 0;
+<div id="movieLists"></div>
 
-        // Star Selection Logic
-        const stars = document.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('click', () => {
-                currentRating = star.getAttribute('data-value');
-                document.getElementById('ratingValue').value = currentRating;
-                updateStarDisplay(currentRating);
-            });
+<script>
+    let currentRating = 0;
+    let editIndex = -1; // Tracks if we are editing an existing movie
+
+    const stars = document.querySelectorAll('.star');
+    const movieForm = document.getElementById('clubForm');
+
+    // Star Selection Logic
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            currentRating = parseInt(star.getAttribute('data-value'));
+            updateStarDisplay(currentRating);
         });
+    });
 
-        function updateStarDisplay(rating) {
-            stars.forEach(s => {
-                s.classList.toggle('selected', s.getAttribute('data-value') <= rating);
-            });
+    function updateStarDisplay(rating) {
+        stars.forEach(s => {
+            s.classList.toggle('selected', s.getAttribute('data-value') <= rating);
+        });
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+
+        if (currentRating === 0) {
+            alert("Please select a rating!");
+            return;
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
+        const movieEntry = {
+            title: document.getElementById('movieTitle').value,
+            year: document.getElementById('movieYear').value,
+            genre: document.getElementById('movieGenre').value,
+            rating: currentRating
+        };
 
-            if (currentRating === 0) {
-                alert("Please select a rating!");
-                return;
-            }
+        let movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
 
-            if (!confirm("Are you sure you want to submit?")) return;
-
-            // Create JS Object structure
-            const movieEntry = {
-                title: document.getElementById('movieTitle').value,
-                year: document.getElementById('movieYear').value,
-                genre: document.getElementById('movieGenre').value,
-                rating: currentRating
-            };
-
-            // LocalStorage Management
-            let movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
+        if (editIndex === -1) {
+            // ADD NEW
             movies.push(movieEntry);
-            localStorage.setItem('movieRatings', JSON.stringify(movies));
-
-            // Reset Form
-            event.target.reset();
-            currentRating = 0;
-            updateStarDisplay(0);
-            
-            displayMovies();
-            alert("Movie Added Successfully!");
+            alert("Movie Added!");
+        } else {
+            // UPDATE EXISTING
+            movies[editIndex] = movieEntry;
+            editIndex = -1; // Reset edit mode
+            document.querySelector('.submit-btn').textContent = "Add Movie";
+            alert("Movie Updated!");
         }
 
-        function displayMovies() {
-            const listDiv = document.getElementById('movieLists');
-            const movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
-            
-            listDiv.innerHTML = movies.map(m => `
-                <div class="movie-item">
-                    <strong>${m.title}</strong> (${m.year}) - <em>${m.genre}</em><br>
-                    <span class="movie-list-stars">${'&#9733;'.repeat(m.rating)}${'&#9734;'.repeat(5-m.rating)}</span>
+        localStorage.setItem('movieRatings', JSON.stringify(movies));
+        
+        event.target.reset();
+        currentRating = 0;
+        updateStarDisplay(0);
+        displayMovies();
+    }
+
+    function displayMovies() {
+        const listDiv = document.getElementById('movieLists');
+        const movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
+        
+        if (movies.length === 0) {
+            listDiv.innerHTML = "<p>No movies rated yet.</p>";
+            return;
+        }
+
+        listDiv.innerHTML = movies.map((m, index) => `
+            <div class="movie-item">
+                <strong>${m.title}</strong> (${m.year}) - <em>${m.genre}</em><br>
+                <span class="movie-list-stars">${'★'.repeat(m.rating)}${'☆'.repeat(5-m.rating)}</span>
+                <div style="margin-top: 5px;">
+                    <button type="button" onclick="editMovie(${index})" style="background:#ffc107; border:none; border-radius:3px; cursor:pointer;">Edit</button>
+                    <button type="button" onclick="deleteMovie(${index})" style="background:#dc3545; color:white; border:none; border-radius:3px; cursor:pointer;">Delete</button>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    }
 
-        // Initial load
-        window.onload = displayMovies;
-    </script>
+    function deleteMovie(index) {
+        if (confirm("Delete this entry?")) {
+            let movies = JSON.parse(localStorage.getItem('movieRatings'));
+            movies.splice(index, 1);
+            localStorage.setItem('movieRatings', JSON.stringify(movies));
+            displayMovies();
+        }
+    }
+
+    function editMovie(index) {
+        let movies = JSON.parse(localStorage.getItem('movieRatings'));
+        const movie = movies[index];
+
+        // Fill form with existing data
+        document.getElementById('movieTitle').value = movie.title;
+        document.getElementById('movieYear').value = movie.year;
+        document.getElementById('movieGenre').value = movie.genre;
+        currentRating = movie.rating;
+        updateStarDisplay(currentRating);
+
+        // Change mode to Update
+        editIndex = index;
+        document.querySelector('.submit-btn').textContent = "Update Movie";
+        window.scrollTo(0, 0); // Scroll to top to see the form
+    }
+
+    window.onload = displayMovies;
+</script>
+
 </body>
 </html>
