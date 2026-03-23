@@ -18,6 +18,7 @@
         
         .movie-item { border-bottom: 1px solid #eee; padding: 10px 0; }
         .movie-list-stars { color: gold; font-size: 18px; }
+        .movie-list-exact { font-size: 14px; color: #666; margin-left: 5px; }
         
         .addMovie { text-align: center; margin-top: 20px; }
         .submit-btn { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
@@ -65,8 +66,6 @@
 
     <a href="index.html" class="back-btn"><b>Back to Q4 Portfolio</b></a>
 
-<div id="movieLists"></div>
-
 <script>
     let currentRating = 0;
     let editIndex = -1; // Tracks if we are editing an existing movie
@@ -96,25 +95,34 @@
             return;
         }
 
-        const movieEntry = {
-            title: document.getElementById('movieTitle').value,
-            year: document.getElementById('movieYear').value,
-            genre: document.getElementById('movieGenre').value,
-            rating: currentRating
-        };
-
         let movies = JSON.parse(localStorage.getItem('movieRatings')) || [];
 
         if (editIndex === -1) {
-            // ADD NEW
+            // ADD NEW MOVIE
+            const movieEntry = {
+                title: document.getElementById('movieTitle').value,
+                year: document.getElementById('movieYear').value,
+                genre: document.getElementById('movieGenre').value,
+                rating: currentRating
+            };
             movies.push(movieEntry);
             alert("Movie Added!");
         } else {
-            // UPDATE EXISTING
+            // UPDATE EXISTING MOVIE (Average the ratings)
+            let oldRating = parseFloat(movies[editIndex].rating);
+            let averagedRating = (oldRating + currentRating) / 2;
+
+            const movieEntry = {
+                title: document.getElementById('movieTitle').value,
+                year: document.getElementById('movieYear').value,
+                genre: document.getElementById('movieGenre').value,
+                rating: averagedRating
+            };
+
             movies[editIndex] = movieEntry;
             editIndex = -1; // Reset edit mode
             document.querySelector('.submit-btn').textContent = "Add Movie";
-            alert("Movie Updated!");
+            alert("Movie Updated! Rating has been averaged.");
         }
 
         localStorage.setItem('movieRatings', JSON.stringify(movies));
@@ -134,16 +142,22 @@
             return;
         }
 
-        listDiv.innerHTML = movies.map((m, index) => `
+        listDiv.innerHTML = movies.map((m, index) => {
+            // Round the rating for the star display to prevent string repeat errors
+            let roundedRating = Math.round(m.rating);
+            
+            return `
             <div class="movie-item">
                 <strong>${m.title}</strong> (${m.year}) - <em>${m.genre}</em><br>
-                <span class="movie-list-stars">${'★'.repeat(m.rating)}${'☆'.repeat(5-m.rating)}</span>
+                <span class="movie-list-stars">${'★'.repeat(roundedRating)}${'☆'.repeat(5-roundedRating)}</span>
+                <span class="movie-list-exact">(${Number(m.rating).toFixed(1)} / 5)</span>
                 <div style="margin-top: 5px;">
                     <button type="button" onclick="editMovie(${index})" style="background:#ffc107; border:none; border-radius:3px; cursor:pointer;">Edit</button>
                     <button type="button" onclick="deleteMovie(${index})" style="background:#dc3545; color:white; border:none; border-radius:3px; cursor:pointer;">Delete</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function deleteMovie(index) {
@@ -163,7 +177,9 @@
         document.getElementById('movieTitle').value = movie.title;
         document.getElementById('movieYear').value = movie.year;
         document.getElementById('movieGenre').value = movie.genre;
-        currentRating = movie.rating;
+        
+        // Round the floating point rating for UI selection
+        currentRating = Math.round(movie.rating);
         updateStarDisplay(currentRating);
 
         // Change mode to Update
