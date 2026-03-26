@@ -56,7 +56,7 @@
 - Add in css ```position: relative; top: 20px; left: 20px;``` to .sidebar.
 
 - Guided Question: What changed compared to the default static positioning? Try to give different values to top and left or you can change it to bottom, right.
-**The entirety of the .sidebar <div> changed locations (i.e. positioning) upon updating. The relative propertyValue essentially "tells" the div and its contents to position itself according to the px values you tell it relative to it previous positioning.**
+The entirety of the .sidebar <div> changed locations (i.e. positioning) upon updating. The relative propertyValue essentially "tells" the div and its contents to position itself according to the px values you tell it relative to it previous positioning.
 
 ### Step 2 (Fixed):
 
