@@ -108,8 +108,23 @@ Aside from these, Absolute positioning removes the element from the document flo
 
     b. How does absolute positioning depend on its parent element?
 
+An absolute element looks up the "DOM tree" for the nearest ancestor that has a position value other than static (like relative, absolute, or fixed).
+
+If it finds one, it uses that ancestor's edges as the (0,0) coordinate for top, left, etc.
+
+If no positioned ancestor exists, it defaults to the browser viewport (the <html> element).
+
+
     c. How do you differentiate sticky from fixed (you can research on sticky)?
 The sticky property essentially "sticks" a container on the screen and prevents the viewer from scrolling away from it, following wherever the viewer scrolls to. Conversely, the fixed position simply fixes all the points of a given container into one specified area within the webpage specified by their px values or others. 
 
     d. If you were designing a webpage for a school event, how might you use positioning to highlight important information? Please give concrete examples.
+
+If I were designing a page for a school intramurals or a fair, I would use positioning like this:
+
+Fixed Positioning: For a "Register Now" button or a "Live Score" ticker at the bottom of the screen so it’s always visible as parents/students scroll through the long schedule.
+
+Absolute Positioning: To place "New!" or "Cancelled" badges (like your .notice box) directly over specific event cards or images.
+
+Sticky Positioning: For the navigation bar containing the days of the week (Day 1, Day 2, Day 3). As you scroll through the events of "Day 1," the header stays at the top so you always know which day you are looking at.
 
