@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="author" content="[Your Name / Section]">
+  <meta name="author" content="TRAVIS MARCO M. LARA / LITHIUM">
   <meta name="description" content="testing and debugging">
   <meta name="keywords" content="testing and debugging">
-  <title>CS3 - [ Travis Marco M. Lara / Li ]</title>
+  <title>CS3 - TRAVIS MARCO M. LARA</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
       <a href="index.html#output">Output</a>
     </nav>
     
-    <h1 style="padding: 30px">[ Travis Marco M. Lara / Li] - Mar 2026</h1>
+    <h1 style="padding: 30px">TRAVIS MARCO M. LARA / LITHIUM - Mar 2026 </h1>
   </header>
 
   <section id="table">
@@ -56,14 +56,14 @@
       <tr>
         <td> 1 </td> 
         <td> JS Line 1 </td> 
-        <td> Function `plotPoint()` lacks parameters, preventing it from receiving coordinates from the HTML button.</td>
-        <td> Added parameters: `function plotPoint(x0, y0, x, y)`</td>
+        <td> Function `plotPoint()` lacks the necessary parameters, preventing it from receiving coordinates from the HTML button's `onclick` event.</td>
+        <td> Added the parameters to the function signature: `function plotPoint(x0, y0, x, y)`</td>
       </tr>
       <tr>
         <td> 2 </td> 
-        <td> JS Line 3 & 10-23 </td> 
-        <td> Directly modifying `in1` and `out1` without proper DOM selection methods.</td>
-        <td> Used `document.getElementById('in1')` and `document.getElementById('out1')` to properly target elements.</td>
+        <td> JS Line 3 & 12-24 </td> 
+        <td> Modifying `in1` and `out1` directly without proper HTML DOM selection methods.</td>
+        <td> Used `document.getElementById('in1')` and `document.getElementById('out1')` to target the table cells properly.</td>
       </tr>
       <tr>
         <td> 3 </td> 
@@ -79,39 +79,39 @@
       </tr>
       <tr>
         <td> 5 </td> 
-        <td> JS Line 25 </td> 
-        <td> Missing a closing curly brace `}` at the end of the file, breaking the function scope.</td>
-        <td> Added the missing `}` to properly close `function plotPoint()`.</td>
+        <td> JS Line 26 </td> 
+        <td> Missing a closing curly brace `}` at the end of the script, which breaks the entire function scope.</td>
+        <td> Added the missing `}` to properly close `function plotPoint(...)`.</td>
       </tr>
       <tr>
         <td> 6 </td> 
         <td> CSS Line 7-9 </td> 
-        <td> Multiple `font-family` declarations overwrite each other. Only the last one applied.</td>
-        <td> Combined them into a single correct fallback list: `font-family: 'Open Sans', 'Poppins', 'Roboto', sans-serif;`.</td>
+        <td> Multiple `font-family` declarations overwrite each other. Only the last one ('Roboto') is applied.</td>
+        <td> Combined them into a single proper fallback list: `font-family: 'Open Sans', 'Poppins', 'Roboto', sans-serif;`.</td>
       </tr>
       <tr>
         <td> 7 </td> 
         <td> CSS Line 23 </td> 
-        <td> The navigation bar scrolls with the page content, violating the requirement.</td>
-        <td> Added `position: fixed; top: 0; left: 0;` to `nav` and added `padding-top` to the `body` so content isn't hidden.</td>
+        <td> The navigation bar scrolls with the page content, violating the requirement that it stay on the first line.</td>
+        <td> Added `position: fixed; top: 0; left: 0;` to `nav` and `padding-top` to `body` so content isn't hidden under the nav.</td>
       </tr>
       <tr>
         <td> 8 </td> 
-        <td> CSS Line 28 </td> 
-        <td> `nav a` is set to `display: block;`, causing navigation links to stack vertically.</td>
-        <td> Changed `display: block;` to `display: inline-block;` to keep links on a single line.</td>
+        <td> CSS Line 31 </td> 
+        <td> `nav a` is set to `display: block;`, causing the navigation links to stack vertically instead of on one line.</td>
+        <td> Changed `display: block;` to `display: inline-block;` to keep links horizontal.</td>
       </tr>
       <tr>
         <td> 9 </td> 
-        <td> CSS Line 35 </td> 
-        <td> Hover effect doesn't work due to an invalid pseudo-class space `nav a :hover`.</td>
+        <td> CSS Line 38 </td> 
+        <td> The hover effect doesn't work due to an invalid pseudo-class space `nav a :hover`.</td>
         <td> Removed the space to form a valid selector: `nav a:hover`.</td>
       </tr>
       <tr>
         <td> 10 </td> 
-        <td> CSS Line 46 </td> 
-        <td> `.point` cannot be moved by `left` and `bottom` properties because it lacks positioning.</td>
-        <td> Added `position: absolute;` to `.point` so it plots correctly inside the coordinate plane.</td>
+        <td> CSS Line 50 </td> 
+        <td> `.point` cannot be moved by `left` and `bottom` properties because it lacks a positioning context.</td>
+        <td> Added `position: absolute;` to `.point` so it plots correctly inside the relative coordinate plane.</td>
       </tr>
     </table>
     <hr>
